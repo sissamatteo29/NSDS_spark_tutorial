@@ -22,6 +22,8 @@ public class WordCount {
         final JavaRDD<String> words = lines.flatMap(line -> Arrays.asList(line.split(" ")).iterator());
         final JavaPairRDD<String, Integer> pairs = words.mapToPair(s -> new Tuple2<>(s, 1));
         final JavaPairRDD<String, Integer> counts = pairs.reduceByKey((a, b) -> a + b);
+
+        // This is an action, that returns a value to the driver program (so it triggers the computation)
         System.out.println(counts.collect());
 
         sc.close();
