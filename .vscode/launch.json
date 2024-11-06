@@ -22,6 +22,7 @@
             "name": "InvestmentSimulator",
             "request": "launch",
             "mainClass": "it.polimi.middleware.spark.batch.iterative.InvestmentSimulator",
+            "vmArgs": "--add-opens java.base/sun.nio.ch=ALL-UNNAMED",
             "projectName": "spark_tutorial"
         },
         {
@@ -37,6 +38,7 @@
             "name": "WordCountModified",
             "request": "launch",
             "mainClass": "it.polimi.middleware.spark.batch.wordcount.WordCountModified",
+            "vmArgs": "--add-opens java.base/sun.nio.ch=ALL-UNNAMED",
             "projectName": "spark_tutorial"
         },
         {
