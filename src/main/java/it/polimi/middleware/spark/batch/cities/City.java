@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.functions;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
@@ -40,7 +41,7 @@ public class City {
             .schema(regionsSchema)
             .csv("files/cities/regions.csv");   
             
-        regions.show();
+        // regions.show();
             
             
         final Dataset<Row> populations = spark
@@ -50,7 +51,21 @@ public class City {
             .schema(populationSchema)
             .csv("files/cities/population.csv");
 
-        populations.show();
+        // populations.show();
+
+        final Dataset<Row> joinRP = regions
+            .join(populations, regions.col("city").equalTo(populations.col("city")))
+            .select(regions.col("region"), populations.col("population"));
+        
+        // joinRP.show();
+
+        final Dataset<Row> countPop = joinRP
+            .groupBy("region").agg(functions.sum("population").alias("sum_pop"));
+
+        // countPop.show();
+
+
+
 
 
 
