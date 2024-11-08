@@ -41,7 +41,7 @@ public class City {
             .schema(regionsSchema)
             .csv("files/cities/regions.csv");   
             
-        // regions.show();
+        regions.show();
             
             
         final Dataset<Row> populations = spark
@@ -51,18 +51,20 @@ public class City {
             .schema(populationSchema)
             .csv("files/cities/population.csv");
 
-        // populations.show();
+        populations.show();
+
 
         final Dataset<Row> joinRP = regions
-            .join(populations, regions.col("city").equalTo(populations.col("city")))
+            .join(populations, regions.col("city").equalTo(populations.col("city")), "full_outer")
             .select(regions.col("region"), populations.col("population"));
         
-        // joinRP.show();
+        joinRP.show();
+
 
         final Dataset<Row> countPop = joinRP
             .groupBy("region").agg(functions.sum("population").alias("sum_pop"));
 
-        // countPop.show();
+        countPop.show();
 
 
 
