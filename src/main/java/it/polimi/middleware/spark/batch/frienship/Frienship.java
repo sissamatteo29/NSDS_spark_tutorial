@@ -40,7 +40,7 @@ public class Frienship {
             .csv(filePath + "files/friendship/friends.csv");
 
         // Compute the first self join between the table and itself
-        final Dataset<Row> first = friends.join(friends,  )
+        //final Dataset<Row> first = friends.join(friends,  )
         
 
 

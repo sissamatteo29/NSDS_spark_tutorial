@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "City",
+            "request": "launch",
+            "mainClass": "it.polimi.middleware.spark.batch.cities.City",
+            "projectName": "spark_tutorial"
+        },
+        {
+            "type": "java",
             "name": "Frienship",
             "request": "launch",
             "mainClass": "it.polimi.middleware.spark.batch.frienship.Frienship",

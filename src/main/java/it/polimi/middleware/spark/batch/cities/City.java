@@ -20,20 +20,39 @@ public class City {
             .appName("cities")
             .getOrCreate();
 
-        // Create a different data schema for each csv
+        // Schema for regions
         List<StructField> fieldsRegions = new ArrayList<>();
         fieldsRegions.add(DataTypes.createStructField("city",DataTypes.StringType, true));
         fieldsRegions.add(DataTypes.createStructField("region",DataTypes.StringType, true));
         StructType regionsSchema = DataTypes.createStructType(fieldsRegions);
+
+        // Schema for population
+        List<StructField> fieldsPopulation = new ArrayList<>();
+        fieldsPopulation.add(DataTypes.createStructField("id",DataTypes.IntegerType, false));
+        fieldsPopulation.add(DataTypes.createStructField("city",DataTypes.StringType, true));
+        fieldsPopulation.add(DataTypes.createStructField("population",DataTypes.IntegerType, true));
+        StructType populationSchema = DataTypes.createStructType(fieldsPopulation);
 
         final Dataset<Row> regions = spark
             .read()
             .option("header", "false")
             .option("delimiter", ",")
             .schema(regionsSchema)
-            .csv("files/cities/regions.csv");
-
+            .csv("files/cities/regions.csv");   
+            
         regions.show();
+            
+            
+        final Dataset<Row> populations = spark
+            .read()
+            .option("header", "false")
+            .option("delimiter", ",")
+            .schema(populationSchema)
+            .csv("files/cities/population.csv");
+
+        populations.show();
+
+
 
 
 
