@@ -48,6 +48,8 @@ public class InvestmentSimulator {
 
         );
 
+        System.out.println(investments.collect());
+
 
         /*
          * Now create a loop to update all the investments in the JavaRDD investments structure.
@@ -58,8 +60,11 @@ public class InvestmentSimulator {
         double sum = 0;
 
         while (sum < threshold) {
+
+            iteration++;
+
             // Update current values
-            investments.map(
+            investments = investments.map(
                 elem -> new Tuple2<>(elem._1() * (1 + elem._2()), elem._2())
             );
 

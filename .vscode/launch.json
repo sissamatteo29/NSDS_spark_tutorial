@@ -6,8 +6,16 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Frienship",
+            "request": "launch",
+            "mainClass": "it.polimi.middleware.spark.batch.frienship.Frienship",
+            "projectName": "spark_tutorial"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
+            "vmArgs": "--add-opens java.base/sun.nio.ch=ALL-UNNAMED",
             "mainClass": "${file}"
         },
         {
@@ -15,6 +23,7 @@
             "name": "Bank",
             "request": "launch",
             "mainClass": "it.polimi.middleware.spark.batch.bank.Bank",
+            "vmArgs": "--add-opens java.base/sun.nio.ch=ALL-UNNAMED",
             "projectName": "spark_tutorial"
         },
         {
