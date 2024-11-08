@@ -30,7 +30,7 @@ public class City {
         // Schema for population
         List<StructField> fieldsPopulation = new ArrayList<>();
         fieldsPopulation.add(DataTypes.createStructField("id",DataTypes.IntegerType, false));
-        fieldsPopulation.add(DataTypes.createStructField("city",DataTypes.StringType, true));
+        fieldsPopulation.add(DataTypes.createStructField("city_name",DataTypes.StringType, true));
         fieldsPopulation.add(DataTypes.createStructField("population",DataTypes.IntegerType, true));
         StructType populationSchema = DataTypes.createStructType(fieldsPopulation);
 
@@ -54,15 +54,29 @@ public class City {
         // populations.show();
 
         final Dataset<Row> joinRP = regions
-            .join(populations, regions.col("city").equalTo(populations.col("city")))
-            .select(regions.col("region"), populations.col("population"));
+            .join(populations, regions.col("city").equalTo(populations.col("city_name")), "full_outer")
+            .select(regions.col("region"), populations.col("population"), populations.col("city_name"));
         
-        // joinRP.show();
+        //joinRP.show();
 
         final Dataset<Row> countPop = joinRP
             .groupBy("region").agg(functions.sum("population").alias("sum_pop"));
 
-        // countPop.show();
+        //countPop.show();
+
+        Dataset<Row> countCities = joinRP
+                .groupBy("region")
+                .agg(functions.count("*").alias("#_cities")
+                ,functions.max("population").alias("#max_city_pop"));
+
+        countCities = countCities.join(populations, countCities.col("#max_city_pop")
+                        .equalTo(populations.col("population")), "left")
+                .select(countCities.col("region"),
+                        countCities.col("#_cities"),
+                        countCities.col("#max_city_pop"),
+                        populations.col("city_name"));
+
+        countCities.show();
 
 
 
@@ -73,5 +87,4 @@ public class City {
 
 
     }
-
 }
