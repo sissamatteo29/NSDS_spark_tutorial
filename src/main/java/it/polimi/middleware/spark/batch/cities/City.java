@@ -40,31 +40,54 @@ public class City {
             .option("delimiter", ",")
             .schema(regionsSchema)
             .csv("files/cities/regions.csv");   
-            
+        
+        System.out.println("################ regions #####################");
         regions.show();
-            
-            
+        
+        
         final Dataset<Row> populations = spark
             .read()
             .option("header", "false")
             .option("delimiter", ",")
             .schema(populationSchema)
             .csv("files/cities/population.csv");
-
-        populations.show();
-
-
-        final Dataset<Row> joinRP = regions
-            .join(populations, regions.col("city").equalTo(populations.col("city")), "full_outer")
-            .select(regions.col("region"), populations.col("population"));
         
+        System.out.println("################ populations #####################");
+        populations.show();
+        
+        // Join by city
+        final Dataset<Row> joinRP = regions
+        .join(populations, regions.col("city").equalTo(populations.col("city")), "full_outer")
+        .drop(regions.col("city")).drop(populations.col("id")).drop(regions.col("city"));
+        
+        System.out.println("################ joinRP #####################");
         joinRP.show();
-
-
+        
+        // Count population per region
         final Dataset<Row> countPop = joinRP
             .groupBy("region").agg(functions.sum("population").alias("sum_pop"));
+        
+        // countPop.show();
+        
+        
+        // Count cities per region, extract max population
+        Dataset<Row> countCities = joinRP
+            .groupBy("region")
+            .agg(functions.count("*").as("#_cities")
+            ,functions.max("population").as("#max_city_pop"));
 
-        countPop.show();
+        countCities.show();
+        
+        Dataset<Row> popAlias = populations.withColumnRenamed("city", "city2");
+
+        // Perform the join using qualified column references and select specific columns
+        Dataset<Row> cityWithPop = countCities
+        .join(popAlias, popAlias.col("population").equalTo(countCities.col("#max_city_pop")), "left")
+        .select(countCities.col("region"), 
+                countCities.col("#_cities"), 
+                countCities.col("#max_city_pop"),
+                popAlias.col("city2"));
+        cityWithPop.show();
 
 
 
@@ -75,5 +98,4 @@ public class City {
 
 
     }
-
 }
