@@ -1,18 +1,29 @@
 package it.polimi.middleware.kafka.basic;
 
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.common.serialization.StringDeserializer;
-
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Properties;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+
+/**
+ * The code here is exactly the same as for the BasicConsumer 
+ * The only difference  is that the consumer sets the auto commit to false and commits the offset manually
+ * every commitEvery messages.
+ */
 
 public class BasicConsumerManual {
     private static final String defaultGroupId = "groupA";
     private static final String defaultTopic = "topicA";
 
     private static final String serverAddr = "localhost:9092";
+
+    // If autoCommit is false, the consumer must commit the offset manually (see line 52)
     private static final boolean autoCommit = false;
     private static final int commitEvery = 100;
 

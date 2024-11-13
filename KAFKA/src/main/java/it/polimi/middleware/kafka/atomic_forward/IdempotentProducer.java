@@ -1,11 +1,15 @@
 package it.polimi.middleware.kafka.atomic_forward;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
+
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
-
-import java.util.*;
 
 public class IdempotentProducer {
     private static final String defaultTopic = "topicA";
@@ -26,6 +30,7 @@ public class IdempotentProducer {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, serverAddr);
 
         // Idempotence = exactly once semantics between the producer and the partition
+        // (all messages delivered to topicA only once)
         props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, String.valueOf(true));
 
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());

@@ -1,17 +1,23 @@
 package it.polimi.middleware.kafka.transactional;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
+
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
-
-import java.util.*;
 
 public class TransactionalProducer {
     private static final String defaultTopic = "topicA";
 
     private static final int numMessages = 100000;
     private static final int waitBetweenMsgs = 500;
+
+    // To use transactions the producer has to specify a unique transactional id (property of the producer) 
     private static final String transactionalId = "myTransactionalId";
 
     private static final String serverAddr = "localhost:9092";
@@ -49,7 +55,7 @@ public class TransactionalProducer {
 
             producer.beginTransaction();
             producer.send(record);
-            if (i % 2 == 0) {
+            if (i % 2 == 0) {       // Half of the messages are committed, half aborted
                 producer.commitTransaction();
             } else {
                 // If not flushed, aborted messages are deleted from the outgoing buffer

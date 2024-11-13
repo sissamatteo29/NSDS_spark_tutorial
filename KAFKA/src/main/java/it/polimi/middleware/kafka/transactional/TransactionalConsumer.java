@@ -1,15 +1,15 @@
 package it.polimi.middleware.kafka.transactional;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.Properties;
+
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.Properties;
 
 public class TransactionalConsumer {
     private static final String defaultGroupId = "groupA";
@@ -33,6 +33,10 @@ public class TransactionalConsumer {
         final Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, serverAddr);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+
+        // The consumer must specify the isolation level
+        // The producer in this example commits only half of the transactions, but if the 
+        // isolation level is set to read_uncommitted, then also uncommitted changes (before aborted) will be seen by this consumer
         if (readUncommitted) {
             props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_uncommitted");
         } else {
