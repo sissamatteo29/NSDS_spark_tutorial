@@ -19,12 +19,14 @@ public class BasicProducer {
     private static final String defaultTopic = "topicA";
 
     private static final int numMessages = 100000;
-    private static final int waitBetweenMsgs = 500;
+    private static final int waitBetweenMsgs = 50;
     private static final boolean waitAck = false;
 
     private static final String serverAddr = "localhost:9092";
 
     public static void main(String[] args) {
+
+
         // If there are no arguments, publish to the default topic
         // Otherwise publish on the topics provided as argument
         List<String> topics = args.length < 1 ?
@@ -45,7 +47,7 @@ public class BasicProducer {
 
         for (int i = 0; i < numMessages; i++) {
             final String topic = topics.get(r.nextInt(topics.size()));  // Randomly select a topic (a topic is automatically created if it does not exist)
-            final Integer key = r.nextInt(1000);
+            final Integer key = r.nextInt(10000);
             final String value = "Val" + i;
             System.out.println(
                     "Topic: " + topic +

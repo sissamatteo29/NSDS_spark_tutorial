@@ -17,6 +17,8 @@ import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
+import it.polimi.codebase.AdminI;
+
 public class C2 {
 
     final static private String consumerTopic = "topicA";
@@ -43,6 +45,13 @@ public class C2 {
 
         KafkaProducer<Integer, String> p2 = new KafkaProducer<>(propsproducer);
 
+        AdminI admin = new AdminI("localhost:9092");
+        System.out.println(admin.numberOfPartitions(consumerTopic));
+        admin.addPartitions(consumerTopic, 3);
+        System.out.println(admin.numberOfPartitions(consumerTopic));
+
+
+
         while (true) { 
             ConsumerRecords<Integer, String> records = c2.poll(Duration.of(5, ChronoUnit.SECONDS));
 
@@ -51,7 +60,14 @@ public class C2 {
                 Integer extractedkey = record.key();
                 ProducerRecord<Integer, String> prec2 = new ProducerRecord<Integer,String>(producerTopic, extractedkey, extractedvalue);
                 p2.send(prec2);
-                System.out.println("Sent Value: "+extractedvalue+" with key: "+extractedkey);
+                System.out.println("Sent Value: "+extractedvalue+" with key: "+extractedkey + "partitions: " + record.partition());
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
 
