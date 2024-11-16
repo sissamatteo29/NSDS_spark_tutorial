@@ -12,6 +12,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 public class BasicProducer {
@@ -34,17 +35,17 @@ public class BasicProducer {
         // Set the addresses of remote Kafka brokers, they can be many (in this demo only the local one).
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, serverAddr);
         // The key and value serializers are used to encode the key and value objects to byte arrays
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
         // Entry point for a KafkaProducer is the KafkaProducer class, generic over the key and value types used to encode the messages
         // The constructor wants a property object with the configurations
-        final KafkaProducer<String, String> producer = new KafkaProducer<>(props);
+        final KafkaProducer<Integer, String> producer = new KafkaProducer<>(props);
         final Random r = new Random();
 
         for (int i = 0; i < numMessages; i++) {
             final String topic = topics.get(r.nextInt(topics.size()));  // Randomly select a topic (a topic is automatically created if it does not exist)
-            final String key = "Key" + r.nextInt(1000);
+            final Integer key = r.nextInt(1000);
             final String value = "Val" + i;
             System.out.println(
                     "Topic: " + topic +
@@ -53,7 +54,7 @@ public class BasicProducer {
             );
 
             // The ProducerRecord class is used to encapsulate the key, value, and topic and then send them to the broker
-            final ProducerRecord<String, String> record = new ProducerRecord<>(topic, key, value);
+            final ProducerRecord<Integer, String> record = new ProducerRecord<>(topic, key, value);
             // The Future structure holds a RecordMetadata that contains metadata about the message sent 
             final Future<RecordMetadata> future = producer.send(record);
 
